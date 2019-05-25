@@ -1,25 +1,11 @@
-#include <WiFiServerSecure.h>
-#include <WiFiClientSecure.h>
-#include <WiFiClientSecureBearSSL.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <WiFiUdp.h>
-#include <ESP8266WiFiType.h>
-#include <CertStoreBearSSL.h>
-#include <ESP8266WiFiAP.h>
-#include <WiFiClient.h>
-#include <BearSSLHelpers.h>
-#include <WiFiServer.h>
-#include <ESP8266WiFiScan.h>
-#include <WiFiServerSecureBearSSL.h>
-#include <ESP8266WiFiGeneric.h>
-#include <ESP8266WiFiSTA.h>
-#include <WiFiClientSecureAxTLS.h>
-#include <WiFiServerSecureAxTLS.h>
-
-#include <ESP8266Wifi.h>
-#include <ESP8266Ping.h>
 #include <NTPClient.h>
+#include <ESP8266Ping.h>
+
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 
 char* ssid = "<WIFI address>";
 char* password = "<WIFI password>";
