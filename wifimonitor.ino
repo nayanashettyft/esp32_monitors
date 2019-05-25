@@ -7,6 +7,8 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 char* ssid = "<WIFI address>";
 char* password = "<WIFI password>";
 const char* remote_host = "www.google.com";
