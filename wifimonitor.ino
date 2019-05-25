@@ -8,9 +8,11 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 IPAddress address;
 
-char* ssid = "<WIFI address>";
+char* ssid = "<WIFI name>";
 char* password = "<WIFI password>";
 const char* remote_host = "www.google.com";
+unsigned int remotePort = 2003;  //graphite server port
+unsigned int localPort = 2003;
 
 void setup()
 {
@@ -34,7 +36,7 @@ void setup()
   } else {
     Serial.println("Error :(");
   }
-  WiFi.hostByName("GRAPTHE-SERVER", address);
+  WiFi.hostByName("GRAPHITE-SERVER", address);
   Serial.println("Host IP");
   Serial.println(address);
   timeClient.begin();
@@ -43,15 +45,16 @@ void setup()
 void loop()
 {
   timeClient.update();
-    Serial.println("Pinging host ");
+  unsigned long metric_time = timeClient.getEpochTime();
+  Serial.println(metric_time);
+  
+  Serial.println("Pinging host ");
   Serial.println(remote_host);
   if(Ping.ping(remote_host)) {
     Serial.println("Success!!");
   } else {
     Serial.println("Error :(");
   }
-  
-  Serial.println(timeClient.getFormattedTime());
 
   delay(1000);
 }
