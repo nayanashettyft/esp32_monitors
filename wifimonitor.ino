@@ -6,7 +6,7 @@
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
-IPAddress address;
+IPAddress graphiteip;
 
 char* ssid = "<WIFI name>";
 char* password = "<WIFI password>";
@@ -36,9 +36,9 @@ void setup()
   } else {
     Serial.println("Error :(");
   }
-  WiFi.hostByName("GRAPHITE-SERVER", address);
-  Serial.println("Host IP");
-  Serial.println(address);
+  WiFi.hostByName("GRAPHITE-SERVER", graphiteip);
+  Serial.println("Graphite IP");
+  Serial.println(graphiteip);
   timeClient.begin();
 }
 
