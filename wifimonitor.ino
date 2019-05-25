@@ -6,12 +6,13 @@
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
-IPAddress graphiteip;
+IPAddress graphiteIP;
+WiFiUDP Udp;
 
 char* ssid = "<WIFI name>";
 char* password = "<WIFI password>";
 const char* remote_host = "www.google.com";
-unsigned int remotePort = 2003;  //graphite server port
+unsigned int graphitePort = 2003;  //graphite server port
 unsigned int localPort = 2003;
 
 void setup()
@@ -36,9 +37,12 @@ void setup()
   } else {
     Serial.println("Error :(");
   }
-  WiFi.hostByName("GRAPHITE-SERVER", graphiteip);
+  
+  WiFi.hostByName("GRAPHITE-SERVER", graphiteIP);
   Serial.println("Graphite IP");
-  Serial.println(graphiteip);
+  Serial.println(graphiteIP);
+  Udp.begin(localPort);
+  
   timeClient.begin();
 }
 
@@ -70,7 +74,6 @@ void loop()
       Serial.println("Error :(");
     }
   }
-
   int rttavg = -1;
   if (success > 0) {
     rttavg = int(rtttotal / success);
@@ -79,12 +82,34 @@ void loop()
   int loss = (10 - success) * 10;
   float rssi = WiFi.RSSI();
 
-  Serial.println(success);
-  Serial.println(rttavg);
-  Serial.println(rttmin);
-  Serial.println(rttmax);
-  Serial.println(loss);
+  Serial.print(success);
+  Serial.write(" ");
+  Serial.print(rttavg);
+  Serial.write(" ");
+  Serial.print(rttmin);
+  Serial.write(" ");
+  Serial.print(rttmax);
+  Serial.write(" ");
+  Serial.print(loss);
+  Serial.write(" ");
   Serial.println(rssi);
 
   delay(1000);
+}
+
+void send_metrics(const char* metric, const int value, const unsigned long timestamp) {
+  Udp.beginPacket(graphiteIP, graphitePort);
+  Udp.print(metric);
+  Udp.write(" ");
+  Udp.print(value);
+  Udp.write(" ");
+  Udp.println(timestamp);
+
+  Serial.print(metric);
+  Serial.write(" ");
+  Serial.print(value);
+  Serial.write(" ");
+  Serial.println(timestamp);
+
+  Udp.endPacket();
 }
