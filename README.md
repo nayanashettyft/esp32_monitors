@@ -4,7 +4,7 @@ This repo contains code and instructions to setup a ESP8266 NodeMCU for monitori
 
 ## WifiMonitor
 
-We use basic ESP8266 client, ping and ntpclient modules to ping google.com at regular intervals and sent the results to graphite. We then visualise the data on grafana.
+We use basic ESP8266 client, ping and ntpclient modules to ping `google.com` at regular intervals and send the results to `graphite`. We then visualise the data on `grafana`.
 
 ## Referance documentation
 
