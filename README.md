@@ -10,4 +10,5 @@ We use basic ESP8266 client, ping and ntpclient modules to ping `google.com` at 
 
 * Use https://learn.acrobotic.com/tutorials/post/esp8266-getting-started if you are new to programming with ardino and ESP8266
 * https://www.youtube.com/watch?v=m2fEXhl70OY this video is also a good 1 to try before going off on your own
+* ESP8266 spec and installation details https://www.handsontec.com/pdf_learn/esp8266-V10.pdf
 * Library documentation for usage: https://www.arduino.cc/en/Reference/Libraries
