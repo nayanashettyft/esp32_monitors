@@ -47,8 +47,21 @@ void setup()
   } else {
     Serial.println("Error :(");
   }
+  timeClient.begin();
 }
 
 void loop()
 {
+  timeClient.update();
+    Serial.println("Pinging host ");
+  Serial.println(remote_host);
+  if(Ping.ping(remote_host)) {
+    Serial.println("Success!!");
+  } else {
+    Serial.println("Error :(");
+  }
+  
+  Serial.println(timeClient.getFormattedTime());
+
+  delay(1000);
 }
