@@ -6,6 +6,7 @@
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
+IPAddress address;
 
 char* ssid = "<WIFI address>";
 char* password = "<WIFI password>";
@@ -33,6 +34,9 @@ void setup()
   } else {
     Serial.println("Error :(");
   }
+  WiFi.hostByName("GRAPTHE-SERVER", address);
+  Serial.println("Host IP");
+  Serial.println(address);
   timeClient.begin();
 }
 
