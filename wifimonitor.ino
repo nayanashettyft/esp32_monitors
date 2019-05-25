@@ -1,5 +1,4 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
 #include <WiFiUdp.h>
 #include <NTPClient.h>
 #include <ESP8266Ping.h>
@@ -8,10 +7,12 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 IPAddress graphiteIP;
 WiFiUDP Udp;
+WiFiClient client;
 
 char* ssid = "<WIFI name>";
 char* password = "<WIFI password>";
 const char* remote_host = "www.google.com";
+const char* graphiteHost = "GRAPHITE-SERVER FQDN"
 unsigned int graphitePort = 2003;  //graphite server port
 unsigned int localPort = 2003;
 
@@ -29,19 +30,6 @@ void setup()
   Serial.println("");
   Serial.println("IP Address: ");
   Serial.println(WiFi.localIP());
-
-  Serial.println("Pinging host ");
-  Serial.println(remote_host);
-  if(Ping.ping(remote_host)) {
-    Serial.println("Success!!");
-  } else {
-    Serial.println("Error :(");
-  }
-  
-  WiFi.hostByName("GRAPHITE-SERVER", graphiteIP);
-  Serial.println("Graphite IP");
-  Serial.println(graphiteIP);
-  Udp.begin(localPort);
   
   timeClient.begin();
 }
@@ -82,34 +70,32 @@ void loop()
   int loss = (10 - success) * 10;
   float rssi = WiFi.RSSI();
 
-  Serial.print(success);
-  Serial.write(" ");
-  Serial.print(rttavg);
-  Serial.write(" ");
-  Serial.print(rttmin);
-  Serial.write(" ");
-  Serial.print(rttmax);
-  Serial.write(" ");
-  Serial.print(loss);
-  Serial.write(" ");
-  Serial.println(rssi);
+  send_metrics("UUID.ping.avg", rttavg, metric_time);
+  send_metrics("UUID.ping.min", rttmin, metric_time);
+  send_metrics("UUID.ping.max", rttmax, metric_time);
+  send_metrics("UUID.ping.loss", loss, metric_time);
+  send_metrics("UUID.ping.rssi", rssi, metric_time);
 
-  delay(1000);
+  delay(5000);
 }
 
 void send_metrics(const char* metric, const int value, const unsigned long timestamp) {
-  Udp.beginPacket(graphiteIP, graphitePort);
-  Udp.print(metric);
-  Udp.write(" ");
-  Udp.print(value);
-  Udp.write(" ");
-  Udp.println(timestamp);
+  if (client.connect(graphiteHost, graphitePort)) {
+    Serial.println("connected");
+    // Send metrics:
+    client.print(metric);
+    client.write(" ");
+    client.print(value);
+    client.write(" ");
+    client.println(timestamp);
+  }
+  else{
+    Serial.println("Error :(");
+  }
 
   Serial.print(metric);
   Serial.write(" ");
   Serial.print(value);
   Serial.write(" ");
   Serial.println(timestamp);
-
-  Udp.endPacket();
 }
