@@ -21,6 +21,7 @@
 #include <ESP8266Ping.h>
 #include <NTPClient.h>
 
+WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 char* ssid = "<WIFI address>";
 char* password = "<WIFI password>";
