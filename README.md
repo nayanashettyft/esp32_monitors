@@ -8,7 +8,7 @@ We use basic ESP8266 client, ping and ntpclient modules to ping `google.com` at 
 
 ## WeightMonitor
 
-We use a `load cell`, `HX711 load cell amplifier` and a `ESP8266 NodeMCU` for the measuring the height of a "thing". We then use the ESP8266 client to connect to a graphite server and send the weight of the "thing" to `graphite`. Alerts and visualisation is on `grafana`.
+We use a `load cell`, `HX711 load cell amplifier` and a `ESP8266 NodeMCU` for measuring the weight of a "thing". We then use the ESP8266 client to connect to a graphite server and send the weight of the "thing" to `graphite`. Alerts and visualisation is on `grafana`.
 
 ## Referance documentation
 
