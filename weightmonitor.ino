@@ -16,8 +16,8 @@ const char* ssid = "lanID"; // Eduroam SSID
 int counter = 0;
 
 // HX711 circuit wiring
-const int LOADCELL_DOUT_PIN = 17;
-const int LOADCELL_SCK_PIN = 16;
+const int LOADCELL_DOUT_PIN = 23;
+const int LOADCELL_SCK_PIN = 22;
 HX711_ADC LoadCell(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
 unsigned int remotePort = 2003;  //graphite server port
@@ -56,7 +56,7 @@ void setup() {
 
   LoadCell.begin(); // start connection to HX711
   LoadCell.start(2000); // load cells gets 2000ms of time to stabilize
-  LoadCell.setCalFactor(402.0); // calibration factor for load cell
+  LoadCell.setCalFactor(200.0); // calibration factor for load cell
 }
 
 void loop() {
