@@ -16,8 +16,8 @@ const char* ssid = "lanID"; // Eduroam SSID
 int counter = 0;
 
 // HX711 circuit wiring
-const int LOADCELL_DOUT_PIN = 23;
-const int LOADCELL_SCK_PIN = 22;
+const int LOADCELL_DOUT_PIN = 2;
+const int LOADCELL_SCK_PIN = 4;
 HX711_ADC LoadCell(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
 unsigned int remotePort = 2003;  //graphite server port
@@ -60,7 +60,9 @@ void setup() {
 }
 
 void loop() {
-  timeClient.update();
+  while(!timeClient.update()) {
+    timeClient.forceUpdate();
+  }
   unsigned long metric_time = timeClient.getEpochTime();
   Serial.println(metric_time);
   
