@@ -1,4 +1,4 @@
-#include <WiFi.h>
+ #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
 #include <NTPClient.h>
@@ -10,10 +10,9 @@ NTPClient timeClient(ntpUDP);
 IPAddress graphiteIP;
 WiFiClient client;
 
-#define EAP_IDENTITY "usename" //if connecting from another corporation, use identity@organisation.domain in Eduroam 
+#define EAP_IDENTITY "username" //if connecting from another corporation, use identity@organisation.domain in Eduroam 
 #define EAP_PASSWORD "password" //your Eduroam password
-const char* ssid = "lanID"; // Eduroam SSID
-int counter = 0;
+const char* ssid = "ssid"; // Eduroam SSID
 
 // HX711 circuit wiring
 const int LOADCELL_DOUT_PIN = 2;
@@ -22,7 +21,7 @@ HX711_ADC LoadCell(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
 unsigned int remotePort = 2003;  //graphite server port
 unsigned int localPort = 2003;
-const char* graphiteHost = "GRAPHITE-SERVER";
+const char* graphiteHost = "graphite.domain.com";
 
 void setup() {
   Serial.begin(115200);
@@ -39,20 +38,7 @@ void setup() {
   esp_wpa2_config_t config = WPA2_CONFIG_INIT_DEFAULT(); //set config settings to default
   esp_wifi_sta_wpa2_ent_enable(&config); //set config settings to enable function
   WiFi.begin(ssid); //connect to wifi
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-    counter++;
-    if(counter>=60){ //after 30 seconds timeout - reset board
-      ESP.restart();
-    }
-  }
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address set: "); 
-  Serial.println(WiFi.localIP()); //print LAN IP
-  
-  timeClient.begin();
+  connect_to_wifi();
 
   LoadCell.begin(); // start connection to HX711
   LoadCell.start(2000); // load cells gets 2000ms of time to stabilize
@@ -60,9 +46,14 @@ void setup() {
 }
 
 void loop() {
+  if (WiFi.status() != WL_CONNECTED){
+    ESP.restart();
+    connect_to_wifi();
+  }
   while(!timeClient.update()) {
     timeClient.forceUpdate();
   }
+  
   unsigned long metric_time = timeClient.getEpochTime();
   Serial.println(metric_time);
   
@@ -95,4 +86,22 @@ void send_metrics_client(const char* metric, const int value, const unsigned lon
   Serial.print(value);
   Serial.write(" ");
   Serial.println(timestamp);
+}
+
+void connect_to_wifi(){
+  int counter = 0;
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    counter++;
+    if(counter>=60){ //after 30 seconds timeout - reset board
+      ESP.restart();
+    }
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address set: "); 
+  Serial.println(WiFi.localIP()); //print LAN IP
+  
+  timeClient.begin();
 }
